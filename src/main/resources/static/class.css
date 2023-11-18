@@ -1,0 +1,78 @@
+body {
+    background-color: #3f3f3f
+}
+
+/* Style for the form container */
+.form-container {
+    text-align: center;
+    margin: 20px;
+    color: #fff;
+}
+
+/* Style for the form itself */
+form {
+    max-width: 400px; /* Adjust the width as needed */
+    margin: 0 auto; /* Center the form horizontally */
+}
+
+/* Style for labels */
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Style for input fields and text area */
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+}
+
+/* Style for the submit button */
+input[type="submit"] {
+    background-color: #ff5900;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Style for the submit button on hover */
+input[type="submit"]:hover {
+    background-color: #852e00;
+}
+
+#entry_list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Style for each entry container */
+.entry-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for odd-numbered entry containers (zebra-striped effect) */
+.entry-container:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.entry-image {
+    max-width: 100px;
+    height: auto;
+    align-self: flex-end; /* Align the image to the end of the container */
+}
+
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Races</title>
+  <script src="/race.js"></script>
+  <link rel="stylesheet" type="text/css" href="/class.css">
+</head>
+<body>
+<div class="form-container">
+  <form onsubmit="createRace();">
+    <h2>Add a Race</h2>
+    <label for="raceName">Race Name:</label>
+    <input type="text" name="raceName" id="raceName" required><br><br>
+
+    <label for="raceImage">Race Image URL:</label>
+    <input type="text" name="raceImage" id="raceImage" required><br><br>
+
+    <label for="raceDescription">Race Description:</label><br>
+    <textarea name="raceDescription" id="raceDescription" rows="4" cols="50" required></textarea><br><br>
+
+    <label for="raceRacialTraits">Race Racial Traits (comma-separated):</label>
+    <input type="text" name="raceRacialTraits" id="raceRacialTraits" required><br><br>
+
+    <input type="submit" value="Submit">
+  </form>
+  <div class="form-container">
+    <input type="submit" value="Update" onclick="updateRace()">
+  </div>
+</div>
+<div class="form-container">
+  <label for="search">Search ID</label>
+  <input type="number" name="search" id="search" required><br><br>
+  <button onclick="find();">Find</button>
+  <button onclick="deleteIt();">Delete</button>
+</div>
+
+<div>
+  <ul id="entry_list"></ul>
+</div>
+
+</body>
+</html>
