@@ -7,6 +7,20 @@
     <link rel="stylesheet" type="text/css" href="/class.css">
 </head>
 <body>
+
+<div class="form-container">
+    <form onsubmit="login();">
+        <h2>Login</h2>
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username"><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required><br><br>
+        <input type="submit" value="Login">
+    </form>
+    <button onclick="logout()">Logout</button>
+</div>
+
 <div class="form-container">
   <form onsubmit="createClass();">
     <h2>Add a Class</h2>

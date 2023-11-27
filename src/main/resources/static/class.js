@@ -1,5 +1,23 @@
 let holdID = 0;
 const ip = "localhost"
+var authHeaderValue = null;
+var username = null;
+var password = null;
+
+function login() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    authHeaderValue = "Basic " + btoa(username + ":" + password);
+
+    sessionStorage.setItem("authHeaderValue", authHeaderValue);
+    sessionStorage.setItem("username", username);
+    sessionStorage.setItem("password", password);
+}
+
+function logout() {
+    sessionStorage.clear();
+    location.reload();
+}
 
 function getClasses() {
     console.log("into getClasses");
@@ -59,6 +77,9 @@ function renderEntries(entries) {
 window.onload = function() {
     console.log("page loading");
     getClasses();
+    authHeaderValue = sessionStorage.getItem("authHeaderValue")
+    username = sessionStorage.getItem("username")
+    password = sessionStorage.getItem("password")
 }
 
 function createClass() {
@@ -79,7 +100,8 @@ function createClass() {
         "classSaves": classSavesArray
     }
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", "http://localhost:8081/class");
+    xmlHttp.open("POST", "http://localhost:8081/class", true, username, password);
+    xmlHttp.setRequestHeader("Authorization", authHeaderValue)
     xmlHttp.setRequestHeader("Content-Type", "application/json");
     xmlHttp.onreadystatechange = function() {
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
@@ -115,7 +137,8 @@ function deleteIt() {
     console.log("into deleteIt()");
     var id = document.getElementById("search").value;
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("DELETE", "http://" + ip + ":8081/class/" + id);
+    xmlHttp.open("DELETE", "http://" + ip + ":8081/class/" + id, true, username, password);
+    xmlHttp.setRequestHeader("Authorization", authHeaderValue)
     xmlHttp.setRequestHeader("Content-Type", "application/json");
     xmlHttp.send();
     xmlHttp.onreadystatechange = function() {
@@ -147,7 +170,8 @@ function updateClass() {
         "classSaves": classSavesArray
     }
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("PUT", "http://" + ip + ":8081/class/" + holdID);
+    xmlHttp.open("PUT", "http://" + ip + ":8081/class/" + holdID, true, username, password);
+    xmlHttp.setRequestHeader("Authorization", authHeaderValue)
     xmlHttp.setRequestHeader("Content-Type", "application/json");
     xmlHttp.onreadystatechange = function() {
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
