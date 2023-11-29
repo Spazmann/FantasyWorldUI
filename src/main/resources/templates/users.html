@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Users</title>
+  <script src="/users.js"></script>
+  <link rel="stylesheet" type="text/css" href="/class.css">
+</head>
+<body>
+<p id="logged-in"></p>
+<a href="/class">Back to class</a>
+
+<div class="form-container">
+  <form onsubmit="createUser();">
+    <h2>Add a User</h2>
+
+    <label for="createUsername">Username:</label>
+    <input type="text" name="createUsername" id="createUsername" required><br><br>
+
+    <label for="createPassword">Password:</label>
+    <input type="text" name="createPassword" id="createPassword" required><br><br>
+
+    <label for="userType">User Type:</label>
+    <select name="userType" id="userType" required>
+      <option value="USER">User</option>
+      <option value="ADMIN">Admin</option>
+    </select><br><br>
+
+    <input type="submit" value="Create New">
+  </form>
+</div>
+
+<div>
+  <ul id="entry_list"></ul>
+</div>
+
+</body>
+</html>

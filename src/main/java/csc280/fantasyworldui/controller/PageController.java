@@ -23,4 +23,8 @@ public class PageController {
         public String getSpellPage() {
                 return "spell";
         }
+        @GetMapping("/user")
+        public String getUserPage() {
+                return "users";
+        }
 }

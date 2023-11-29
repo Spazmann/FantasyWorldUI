@@ -7,12 +7,31 @@ var password = null;
 function login() {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
-    authHeaderValue = "Basic " + btoa(username + ":" + password);
+    var authHeaderValue = "Basic " + btoa(username + ":" + password);
 
-    sessionStorage.setItem("authHeaderValue", authHeaderValue);
-    sessionStorage.setItem("username", username);
-    sessionStorage.setItem("password", password);
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", "http://localhost:8081/user/checkUser?username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password), true);
+    xmlHttp.setRequestHeader("Authorization", authHeaderValue);
+    xmlHttp.onreadystatechange = function() {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                // Authentication successful
+                console.log("Authentication successful");
+                sessionStorage.setItem("authHeaderValue", authHeaderValue);
+                sessionStorage.setItem("username", username);
+                sessionStorage.setItem("password", password);
+                location.reload();
+            } else {
+                // Authentication failed
+                console.log("Authentication failed");
+                location.reload();
+            }
+        }
+    };
+    xmlHttp.send();
 }
+
+
 
 function logout() {
     sessionStorage.clear();
@@ -80,6 +99,9 @@ window.onload = function() {
     authHeaderValue = sessionStorage.getItem("authHeaderValue")
     username = sessionStorage.getItem("username")
     password = sessionStorage.getItem("password")
+    var logged = document.getElementById("logged-in");
+    if (username == null) username = "None"
+    logged.textContent = "Logged-In as " + username
 }
 
 function createClass() {
@@ -100,15 +122,18 @@ function createClass() {
         "classSaves": classSavesArray
     }
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", "http://localhost:8081/class", true, username, password);
-    xmlHttp.setRequestHeader("Authorization", authHeaderValue)
+    xmlHttp.open("POST", "http://localhost:8081/class", true);
+    xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xmlHttp.setRequestHeader("Content-Type", "application/json");
-    xmlHttp.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            //adding message is done, show results
-            getClasses();
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                location.reload()
+            } else {
+                console.error("Error creating class:", this.status, this.responseText);
+            }
         }
-    }
+    };
     xmlHttp.send(JSON.stringify(entry));
     holdID = 0;
 }
@@ -137,21 +162,24 @@ function deleteIt() {
     console.log("into deleteIt()");
     var id = document.getElementById("search").value;
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("DELETE", "http://" + ip + ":8081/class/" + id, true, username, password);
-    xmlHttp.setRequestHeader("Authorization", authHeaderValue)
+    xmlHttp.open("DELETE", "http://" + ip + ":8081/class/" + id, true);
+    xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xmlHttp.setRequestHeader("Content-Type", "application/json");
     xmlHttp.send();
-    xmlHttp.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            getClasses();
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                location.reload()
+            } else {
+                console.error("Error deleting class:", this.status, this.responseText);
+            }
         }
-    }
-    location.reload();
+    };
 }
 
 function updateClass() {
     if (holdID === 0) {
-        return
+        return;
     }
     console.log("Updating Class...");
     var className = document.getElementById("className").value;
@@ -168,16 +196,20 @@ function updateClass() {
         "classDescription": classDescription,
         "classPrimaryAbility": classPrimaryAbilityArray,
         "classSaves": classSavesArray
-    }
+    };
+
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("PUT", "http://" + ip + ":8081/class/" + holdID, true, username, password);
-    xmlHttp.setRequestHeader("Authorization", authHeaderValue)
+    xmlHttp.open("PUT", "http://" + ip + ":8081/class/" + holdID, true);
+    xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xmlHttp.setRequestHeader("Content-Type", "application/json");
-    xmlHttp.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            //adding message is done, show results
-            getClasses();
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                location.reload()
+            } else {
+                console.error("Error updating class:", this.status, this.responseText);
+            }
         }
-    }
+    };
     xmlHttp.send(JSON.stringify(entry));
 }
