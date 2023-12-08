@@ -1,4 +1,8 @@
 let holdID = 0;
+const ip = "localhost"
+var authHeaderValue = null;
+var username = null;
+var password = null;
 
 function getRaces() {
     console.log("into getRaces");
@@ -9,7 +13,7 @@ function getRaces() {
             renderEntries(entries);
         }
     }
-    xmlHttp.open("GET", "http://localhost:8081/race", true);
+    xmlHttp.open("GET", "http://" + ip + ":8081/race", true);
     xmlHttp.send();
 }
 
@@ -34,10 +38,6 @@ function renderEntries(entries) {
         raceDescriptionElement.textContent = "Race Description: " + entry.raceDescription;
         entryContainer.appendChild(raceDescriptionElement);
 
-        var raceRacialTraits = document.createElement("p");
-        raceRacialTraits.textContent = "Racial Traits: " + entry.raceRacialTraits;
-        entryContainer.appendChild(raceRacialTraits);
-
         if (entry.raceImage) {
             var imageElement = document.createElement("img");
             imageElement.src = entry.raceImage;
@@ -54,31 +54,38 @@ function renderEntries(entries) {
 window.onload = function() {
     console.log("page loading");
     getRaces();
+    authHeaderValue = sessionStorage.getItem("authHeaderValue")
+    username = sessionStorage.getItem("username")
+    password = sessionStorage.getItem("password")
+    var logged = document.getElementById("logged-in");
+    if (username == null) username = "None"
+    logged.textContent = "Logged-In as " + username
 }
 
 function createRace() {
-    console.log("Creating Race...");
+    console.log("Creating race...");
     var raceName = document.getElementById("raceName").value;
     var raceImage = document.getElementById("raceImage").value;
     var raceDescription = document.getElementById("raceDescription").value;
-    var raceRacialTraits = document.getElementById("raceRacialTraits").value;
-    var raceRacialTraitsArray = raceRacialTraits.split(', ');
     var entry = {
         "id": null,
         "raceName": raceName,
         "raceImage": raceImage,
-        "raceDescription": raceDescription,
-        "raceRacialTraits": raceRacialTraitsArray
+        "raceDescription": raceDescription
     }
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", 'http://localhost:8081/race');
+    xmlHttp.open("POST", "http://localhost:8081/race", true);
+    xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xmlHttp.setRequestHeader("Content-Type", "application/json");
-    xmlHttp.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            //adding message is done, show results
-            getRaces();
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                location.reload()
+            } else {
+                console.error("Error creating race:", this.status, this.responseText);
+            }
         }
-    }
+    };
     xmlHttp.send(JSON.stringify(entry));
     holdID = 0;
 }
@@ -87,7 +94,7 @@ function find() {
     console.log("find()");
     var id = document.getElementById("search").value;
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", 'http://localhost:8081/race/' + id);
+    xmlHttp.open("GET", "http://" + ip + ":8081/race/" + id);
     xmlHttp.setRequestHeader("Content-Type", "application/json");
     xmlHttp.send();
     xmlHttp.onreadystatechange = function() {
@@ -96,7 +103,6 @@ function find() {
             raceName.value = jsnMsg.raceName;
             raceImage.value = jsnMsg.raceImage;
             raceDescription.value = jsnMsg.raceDescription;
-            raceRacialTraits.value = jsnMsg.raceRacialTraits;
         }
     }
     holdID = id;
@@ -106,42 +112,48 @@ function deleteIt() {
     console.log("into deleteIt()");
     var id = document.getElementById("search").value;
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("DELETE", 'http://localhost:8081/race/' + id);
+    xmlHttp.open("DELETE", "http://" + ip + ":8081/race/" + id, true);
+    xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xmlHttp.setRequestHeader("Content-Type", "application/json");
     xmlHttp.send();
-    xmlHttp.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            getRaces();
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                location.reload()
+            } else {
+                console.error("Error deleting race:", this.status, this.responseText);
+            }
         }
-    }
-    location.reload();
+    };
 }
 
 function updateRace() {
     if (holdID === 0) {
-        return
+        return;
     }
-    console.log("Updating Race...");
+    console.log("Updating race...");
     var raceName = document.getElementById("raceName").value;
     var raceImage = document.getElementById("raceImage").value;
     var raceDescription = document.getElementById("raceDescription").value;
-    var raceRacialTraits = document.getElementById("raceRacialTraits").value;
-    var raceRacialTraitsArray = raceRacialTraits.split(', ');
     var entry = {
         "id": null,
         "raceName": raceName,
         "raceImage": raceImage,
-        "raceDescription": raceDescription,
-        "raceRacialTraits": raceRacialTraitsArray
-    }
+        "raceDescription": raceDescription
+    };
+
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("PUT", 'http://localhost:8081/race/' + holdID);
+    xmlHttp.open("PUT", "http://" + ip + ":8081/race/" + holdID, true);
+    xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xmlHttp.setRequestHeader("Content-Type", "application/json");
-    xmlHttp.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            //adding message is done, show results
-            getRaces();
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                location.reload()
+            } else {
+                console.error("Error updating race:", this.status, this.responseText);
+            }
         }
-    }
+    };
     xmlHttp.send(JSON.stringify(entry));
 }

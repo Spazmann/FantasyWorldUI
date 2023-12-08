@@ -1,4 +1,8 @@
 let holdID = 0;
+const ip = "localhost"
+var authHeaderValue = null;
+var username = null;
+var password = null;
 
 function getSpells() {
     console.log("into getSpells");
@@ -9,7 +13,7 @@ function getSpells() {
             renderEntries(entries);
         }
     }
-    xmlHttp.open("GET", "http://localhost:8081/spell", true);
+    xmlHttp.open("GET", "http://" + ip + ":8081/spell", true);
     xmlHttp.send();
 }
 
@@ -34,14 +38,6 @@ function renderEntries(entries) {
         spellDescriptionElement.textContent = "Spell Description: " + entry.spellDescription;
         entryContainer.appendChild(spellDescriptionElement);
 
-        var spellCastingTimeElement = document.createElement("p");
-        spellCastingTimeElement.textContent = "Casting Time: " + entry.spellCastingTime;
-        entryContainer.appendChild(spellCastingTimeElement);
-
-        var spellCostElement = document.createElement("p");
-        spellCostElement.textContent = "Saves: " + entry.spellCost;
-        entryContainer.appendChild(spellCostElement);
-
         if (entry.spellImage) {
             var imageElement = document.createElement("img");
             imageElement.src = entry.spellImage;
@@ -58,32 +54,38 @@ function renderEntries(entries) {
 window.onload = function() {
     console.log("page loading");
     getSpells();
+    authHeaderValue = sessionStorage.getItem("authHeaderValue")
+    username = sessionStorage.getItem("username")
+    password = sessionStorage.getItem("password")
+    var logged = document.getElementById("logged-in");
+    if (username == null) username = "None"
+    logged.textContent = "Logged-In as " + username
 }
 
 function createSpell() {
-    console.log("Creating Spell...");
+    console.log("Creating spell...");
     var spellName = document.getElementById("spellName").value;
     var spellImage = document.getElementById("spellImage").value;
     var spellDescription = document.getElementById("spellDescription").value;
-    var spellCastingTime = document.getElementById("spellCastingTime").value;
-    var spellCost = document.getElementById("spellCost").value;
     var entry = {
         "id": null,
         "spellName": spellName,
         "spellImage": spellImage,
-        "spellDescription": spellDescription,
-        "spellCastingTime": spellCastingTime,
-        "spellCost": spellCost
+        "spellDescription": spellDescription
     }
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", 'http://localhost:8081/spell');
+    xmlHttp.open("POST", "http://localhost:8081/spell", true);
+    xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xmlHttp.setRequestHeader("Content-Type", "application/json");
-    xmlHttp.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            //adding message is done, show results
-            getSpells();
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                location.reload()
+            } else {
+                console.error("Error creating spell:", this.status, this.responseText);
+            }
         }
-    }
+    };
     xmlHttp.send(JSON.stringify(entry));
     holdID = 0;
 }
@@ -92,7 +94,7 @@ function find() {
     console.log("find()");
     var id = document.getElementById("search").value;
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", 'http://localhost:8081/spell/' + id);
+    xmlHttp.open("GET", "http://" + ip + ":8081/spell/" + id);
     xmlHttp.setRequestHeader("Content-Type", "application/json");
     xmlHttp.send();
     xmlHttp.onreadystatechange = function() {
@@ -101,8 +103,6 @@ function find() {
             spellName.value = jsnMsg.spellName;
             spellImage.value = jsnMsg.spellImage;
             spellDescription.value = jsnMsg.spellDescription;
-            spellCastingTime.value = jsnMsg.spellCastingTime;
-            spellCost.value = jsnMsg.spellCost;
         }
     }
     holdID = id;
@@ -112,44 +112,48 @@ function deleteIt() {
     console.log("into deleteIt()");
     var id = document.getElementById("search").value;
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("DELETE", 'http://localhost:8081/spell/' + id);
+    xmlHttp.open("DELETE", "http://" + ip + ":8081/spell/" + id, true);
+    xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xmlHttp.setRequestHeader("Content-Type", "application/json");
     xmlHttp.send();
-    xmlHttp.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            getSpells();
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                location.reload()
+            } else {
+                console.error("Error deleting spell:", this.status, this.responseText);
+            }
         }
-    }
-    location.reload();
+    };
 }
 
 function updateSpell() {
     if (holdID === 0) {
-        return
+        return;
     }
-    console.log("Updating Spell...");
+    console.log("Updating spell...");
     var spellName = document.getElementById("spellName").value;
     var spellImage = document.getElementById("spellImage").value;
     var spellDescription = document.getElementById("spellDescription").value;
-    var spellCastingTime = document.getElementById("spellCastingTime").value;
-    var spellCost = document.getElementById("spellCost").value;
     var entry = {
         "id": null,
         "spellName": spellName,
         "spellImage": spellImage,
-        "spellDescription": spellDescription,
-        "spellCastingTime": spellCastingTime,
-        "spellCost": spellCost
-    }
+        "spellDescription": spellDescription
+    };
+
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("PUT", 'http://localhost:8081/spell/' + holdID);
+    xmlHttp.open("PUT", "http://" + ip + ":8081/spell/" + holdID, true);
+    xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xmlHttp.setRequestHeader("Content-Type", "application/json");
-    xmlHttp.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            //adding message is done, show results
-            getSpells();
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                location.reload()
+            } else {
+                console.error("Error updating spell:", this.status, this.responseText);
+            }
         }
-    }
+    };
     xmlHttp.send(JSON.stringify(entry));
-    holdID = 0;
 }

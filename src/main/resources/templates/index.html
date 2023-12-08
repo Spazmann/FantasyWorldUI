@@ -3,9 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <title>Fantasy Home</title>
-  <link rel="stylesheet" type="text/css" href="/index.css">
+  <link rel="stylesheet" type="text/css" href="/css/index.css">
 </head>
 <body>
+
+<p id="logged-in"></p>
+
+<div class="form-container">
+    <h2>Login</h2>
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username"><br><br>
+
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" required><br><br>
+    <button onclick="login()">Login</button>
+    <button onclick="logout()">Logout</button>
+</div>
+<a href="/user">Go to accounts</a>
+
 <div class="grid-container">
     <div class="grid-item">
       <a href="/class">Go to Classes</a>

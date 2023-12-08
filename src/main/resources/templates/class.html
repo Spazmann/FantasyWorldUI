@@ -3,24 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Classes</title>
-    <script src="/class.js"></script>
-    <link rel="stylesheet" type="text/css" href="/class.css">
+    <script src="/js/class.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/object.css">
 </head>
 <body>
-<p id="logged-in"></p>
-
-<div class="form-container">
-        <h2>Login</h2>
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username"><br><br>
-
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required><br><br>
-        <button onclick="login()">Login</button>
-    <button onclick="logout()">Logout</button>
-</div>
-<a href="/user">Go to accounts</a>
-
 <div class="form-container">
   <form onsubmit="createClass();">
     <h2>Add a Class</h2>
@@ -32,12 +18,6 @@
 
     <label for="classDescription">Class Description:</label><br>
     <textarea name="classDescription" id="classDescription" rows="4" cols="50" required></textarea><br><br>
-
-    <label for="classPrimaryAbility">Class Primary Ability (comma-separated):</label>
-    <input type="text" name="classPrimaryAbility" id="classPrimaryAbility" required><br><br>
-
-    <label for="classSaves">Class Saves (comma-separated):</label>
-    <input type="text" name="classSaves" id="classSaves" required><br><br>
 
     <input type="submit" value="Create New">
   </form>

@@ -2,30 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Spells</title>
-  <script src="/spell.js"></script>
-  <link rel="stylesheet" type="text/css" href="/class.css">
+  <title>spells</title>
+  <script src="/js/spell.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/object.css">
 </head>
 <body>
 <div class="form-container">
   <form onsubmit="createSpell();">
-    <h2>Add a Spell</h2>
-    <label for="spellName">Spell Name:</label>
+    <h2>Add a spell</h2>
+    <label for="spellName">spell Name:</label>
     <input type="text" name="spellName" id="spellName" required><br><br>
 
-    <label for="spellImage">Spell Image URL:</label>
+    <label for="spellImage">spell Image URL:</label>
     <input type="text" name="spellImage" id="spellImage" required><br><br>
 
-    <label for="spellDescription">Spell Description:</label><br>
+    <label for="spellDescription">spell Description:</label><br>
     <textarea name="spellDescription" id="spellDescription" rows="4" cols="50" required></textarea><br><br>
 
-    <label for="spellCastingTime">Casting Time:</label>
-    <input type="text" name="spellCastingTime" id="spellCastingTime" required><br><br>
-
-    <label for="spellCost">Spell Cost:</label>
-    <input type="text" name="spellCost" id="spellCost" required><br><br>
-
-    <input type="submit" value="Submit">
+    <input type="submit" value="Create New">
   </form>
   <div class="form-container">
     <input type="submit" value="Update" onclick="updateSpell()">

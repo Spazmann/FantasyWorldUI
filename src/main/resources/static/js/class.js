@@ -4,40 +4,6 @@ var authHeaderValue = null;
 var username = null;
 var password = null;
 
-function login() {
-    var username = document.getElementById("username").value;
-    var password = document.getElementById("password").value;
-    var authHeaderValue = "Basic " + btoa(username + ":" + password);
-
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", "http://localhost:8081/user/checkUser?username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password), true);
-    xmlHttp.setRequestHeader("Authorization", authHeaderValue);
-    xmlHttp.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE) {
-            if (this.status === 200) {
-                // Authentication successful
-                console.log("Authentication successful");
-                sessionStorage.setItem("authHeaderValue", authHeaderValue);
-                sessionStorage.setItem("username", username);
-                sessionStorage.setItem("password", password);
-                location.reload();
-            } else {
-                // Authentication failed
-                console.log("Authentication failed");
-                location.reload();
-            }
-        }
-    };
-    xmlHttp.send();
-}
-
-
-
-function logout() {
-    sessionStorage.clear();
-    location.reload();
-}
-
 function getClasses() {
     console.log("into getClasses");
     var xmlHttp = new XMLHttpRequest();
@@ -72,14 +38,6 @@ function renderEntries(entries) {
         classDescriptionElement.textContent = "Class Description: " + entry.classDescription;
         entryContainer.appendChild(classDescriptionElement);
 
-        var classPrimaryAbilityElement = document.createElement("p");
-        classPrimaryAbilityElement.textContent = "Primary Ability: " + entry.classPrimaryAbility;
-        entryContainer.appendChild(classPrimaryAbilityElement);
-
-        var classSavesElement = document.createElement("p");
-        classSavesElement.textContent = "Saves: " + entry.classSaves;
-        entryContainer.appendChild(classSavesElement);
-
         if (entry.classImage) {
             var imageElement = document.createElement("img");
             imageElement.src = entry.classImage;
@@ -109,17 +67,11 @@ function createClass() {
     var className = document.getElementById("className").value;
     var classImage = document.getElementById("classImage").value;
     var classDescription = document.getElementById("classDescription").value;
-    var classPrimaryAbility = document.getElementById("classPrimaryAbility").value;
-    var classSaves = document.getElementById("classSaves").value;
-    var classPrimaryAbilityArray = classPrimaryAbility.split(', ');
-    var classSavesArray = classSaves.split(', ');
     var entry = {
         "id": null,
         "className": className,
         "classImage": classImage,
-        "classDescription": classDescription,
-        "classPrimaryAbility": classPrimaryAbilityArray,
-        "classSaves": classSavesArray
+        "classDescription": classDescription
     }
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", "http://localhost:8081/class", true);
@@ -151,8 +103,6 @@ function find() {
             className.value = jsnMsg.className;
             classImage.value = jsnMsg.classImage;
             classDescription.value = jsnMsg.classDescription;
-            classPrimaryAbility.value = jsnMsg.classPrimaryAbility;
-            classSaves.value = jsnMsg.classSaves;
         }
     }
     holdID = id;
@@ -185,17 +135,11 @@ function updateClass() {
     var className = document.getElementById("className").value;
     var classImage = document.getElementById("classImage").value;
     var classDescription = document.getElementById("classDescription").value;
-    var classPrimaryAbility = document.getElementById("classPrimaryAbility").value;
-    var classSaves = document.getElementById("classSaves").value;
-    var classPrimaryAbilityArray = classPrimaryAbility.split(', ');
-    var classSavesArray = classSaves.split(', ');
     var entry = {
         "id": null,
         "className": className,
         "classImage": classImage,
-        "classDescription": classDescription,
-        "classPrimaryAbility": classPrimaryAbilityArray,
-        "classSaves": classSavesArray
+        "classDescription": classDescription
     };
 
     var xmlHttp = new XMLHttpRequest();
